@@ -13,21 +13,30 @@ import type React from "react"; // Added import for React
 import { SocialLoginBtns } from "@/components/buttons/social-login-btns"
 import { GeneralBtn } from "@/components/buttons/general-btn"
 import LazyImage from "@/components/LazyImage";
-type LoginFormProps = React.ComponentProps<"div">;
+type SignUpFormProps = React.ComponentProps<"div">;
 
-export function LoginForm({ className, ...props }: LoginFormProps) {
+export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-
+    setErrors({})
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const newErrors: { email?: string; password?: string } = {}
+    if (!email) newErrors.email = "Email is required"
+    if (!password) newErrors.password = "Password is required"
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      setIsLoading(false)
+      return
+    }
     try {
       const result: SignInResponse | undefined = await signIn("credentials", {
         email,
@@ -37,7 +46,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 
       // Check if result is defined and has the 'ok' property
       if (!result || !result.ok) {
-        throw new Error(result?.error || "Unknown error");
+        throw new Error(result?.error || "Invalid email or password")
       }
 
       // Small delay before redirect
@@ -45,7 +54,6 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
       await router.replace("/");
 
     } catch (error) {
-      console.log("asasas", error);
       toast({
         title: "Error",
         description:
@@ -71,6 +79,17 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 </p>
               </div>
               <div className="space-y-4">
+              <div className="grid gap-2">
+                <Label htmlFor="fullname">Full name</Label>
+                <Input
+                  id="fullname"
+                  name="fullname"
+                  type="text"
+                  placeholder="johndoe"
+                  className={errors.fullname ? "border-red-500" : ""}
+                />
+                  {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+              </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -78,8 +97,9 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                     name="email"
                     type="email"
                     placeholder="m@example.com"
-                    required
+                    className={errors.email ? "border-red-500" : ""}
                   />
+                  {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -91,7 +111,8 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                       Forgot your password?
                     </Link>
                   </div>
-                  <Input id="password" name="password" type="password" required />
+                  <Input id="password" name="password" type="password" className={errors.password ? "border-red-500" : ""} />
+                  {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
                 </div>
               </div>
               <div className="w-full">             <GeneralBtn type="submit" title="Sign in" loader={isLoading} /></div>
@@ -107,10 +128,10 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 <SocialLoginBtns />
               </div>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link href="/sign-up" className="underline underline-offset-4">
-                  Sign up
-                </Link>
+                Already have an account?{" "}
+                <a href="/sign-in" className="underline underline-offset-4">
+                  Sign in
+                </a>
               </div>
             </form>
           </div>

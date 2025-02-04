@@ -107,8 +107,7 @@ export const authOptions: NextAuthOptions = {
             isVerified: user.isVerified,
           };
         } catch (error) {
-          console.error("Authorization error:", error);
-          return null;
+          throw new Error(error instanceof Error ? error.message : "An unknown error occurred")
         }
       },
     }),
