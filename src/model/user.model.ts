@@ -13,6 +13,7 @@ export interface IUser extends Document {
   verifyToken?: string;
   verifyTokenExpiry?: Date;
   role: "user" | "admin" | "agent";
+  dashboard: "user" | "admin" | "agent";
   dateOfBirth?: Date;
   phoneNumber?: string;
   address?: string;
@@ -39,40 +40,58 @@ const UserSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     provider: { type: String, default: null },
-    image: { type: String, default: null },
+    image: { type: String, default: null},
     isVerified: { type: Boolean, default: false },
     verifyToken: String,
     verifyTokenExpiry: Date,
     role: { type: String, enum: ["user", "admin", "agent"], default: "user" },
+    dashboard: {
+      type: String,
+      enum: ["user", "admin", "agent"],
+      default: "user",
+    },
     dateOfBirth: Date,
     phoneNumber: { type: String, unique: true },
-    address: String,
+    address: { type: Schema.Types.ObjectId },
     socialMediaProfiles: [
       {
         platform: {
           type: String,
           enum: ["facebook", "twitter", "linkedin", "instagram"],
-          required: true,
         },
-        url: { type: String, required: true },
+        url: { type: String },
       },
     ],
-    lastLogin: { type: Date, default: Date.now },
+    lastLogin: { type: Date },
     is2FAEnabled: { type: Boolean, default: false },
     resetPasswordToken: String,
     resetPasswordTokenExpiry: Date,
-    permissions: [{ type: String, enum: ["read", "write", "delete", "update"] }],
-    subscriptionPlan: { type: String, enum: ["basic", "premium", "enterprise"] },
+    permissions: [
+      { type: String, enum: ["read", "write", "delete", "update"] },
+    ],
+    subscriptionPlan: {
+      type: String,
+      enum: ["basic", "premium", "enterprise"],
+    },
     isProfileComplete: { type: Boolean, default: false },
     activityLog: [{ type: Schema.Types.ObjectId, ref: "UserActivity" }],
-    preferences: { language: { type: String, default: "en" }, notifications: { type: Boolean, default: true } },
+    preferences: {
+      language: { type: String, default: "en" },
+      notifications: { type: Boolean, default: true },
+    },
     isAccountLocked: { type: Boolean, default: false },
     deactivatedAt: Date,
     referralCode: String,
-    securityQuestions: [{ question: { type: String, required: true }, answer: { type: String, required: true } }],
+    securityQuestions: [
+      {
+        question: { type: String },
+        answer: { type: String },
+      },
+    ],
   },
   { timestamps: true }
 );
 
 // Check if the model already exists before defining it
-export const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+export const User: Model<IUser> =
+  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

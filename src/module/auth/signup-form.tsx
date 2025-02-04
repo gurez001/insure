@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn, SignInResponse } from "next-auth/react";
+import { useSessionStorage } from "@/utils/setSessionData";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -13,46 +13,60 @@ import type React from "react"; // Added import for React
 import { SocialLoginBtns } from "@/components/buttons/social-login-btns"
 import { GeneralBtn } from "@/components/buttons/general-btn"
 import LazyImage from "@/components/LazyImage";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 type SignUpFormProps = React.ComponentProps<"div">;
 
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
+  const { setSessionData } = useSessionStorage();
   const { toast } = useToast();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+  const [isAgent, setIsAgent] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string, name?: string, role?: string }>({})
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     setErrors({})
     const formData = new FormData(event.currentTarget);
+    const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    const newErrors: { email?: string; password?: string } = {}
-    if (!email) newErrors.email = "Email is required"
-    if (!password) newErrors.password = "Password is required"
+    const role = isAgent
+
+    const newErrors: { name?: string; email?: string; password?: string; role?: string } = {};
+    if (!name) newErrors.name = "Full name is required";
+    if (!email) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       setIsLoading(false)
       return
     }
+    const data = {
+      name, email, password, role
+    };
     try {
-      const result: SignInResponse | undefined = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
+      const res: Response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const response = await res.json();
+
+      if (!res.ok) {
+        throw new Error(response.message);
+      }
+      setSessionData("token", response.token, 10);
+      toast({
+        title: "Success",
+        description: "Please check your email to verify your account",
       });
 
-      // Check if result is defined and has the 'ok' property
-      if (!result || !result.ok) {
-        throw new Error(result?.error || "Invalid email or password")
-      }
-
-      // Small delay before redirect
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      await router.replace("/");
+      router.push("/verify");
 
     } catch (error) {
       toast({
@@ -84,29 +98,14 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                   <Label htmlFor="fullname">Full name</Label>
                   <Input
                     id="fullname"
-                    name="fullname"
+                    name="name"
                     type="text"
                     placeholder="johndoe"
-                    className={errors.fullname ? "border-red-500" : ""}
+                    className={errors.name ? "border-red-500" : ""}
                   />
-                  {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+                  {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                 </div>
-                <div className="space-y-2">
-                <Label htmlFor="fullname">Select role</Label>
 
-                  <div className="flex items-center space-x-2">
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="consumer">Consumer</SelectItem>
-                        <SelectItem value="agent">Agent</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {errors.agree && <p className="text-sm text-red-500">{errors.agree.message}</p>}
-                </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -130,6 +129,10 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                   </div>
                   <Input id="password" name="password" type="password" className={errors.password ? "border-red-500" : ""} />
                   {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+                </div>
+                <div className="space-y-2 flex gap-2 items-center">
+                  <Checkbox id="agent" checked={isAgent} onCheckedChange={() => setIsAgent(!isAgent)} />
+                  <Label style={{margin:"0px !important"}} htmlFor="agent">I am a Insurance Officer</Label>
                 </div>
               </div>
               <div className="w-full">             <GeneralBtn type="submit" title="Sign in" loader={isLoading} /></div>

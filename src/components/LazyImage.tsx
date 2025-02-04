@@ -13,11 +13,10 @@ export default function LazyImage({ src, alt, width, height }: LazyImageProps) {
       <Image
         src={src}
         alt={alt}
-        width={width}
-        height={height}
-        layout="responsive"
-        objectFit="cover"
-        loading="lazy"
+        width={width} 
+        height={height} 
+        style={{ objectFit: "cover" }} 
+        priority
       />
     </div>
   )

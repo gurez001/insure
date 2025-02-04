@@ -71,8 +71,6 @@ export const authOptions: NextAuthOptions = {
       async authorize(
         credentials: Record<"email" | "password", string> | undefined
       ): Promise<UserType | null> {
-        console.log(credentials);
-        console.log(credentials?.email);
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Email or username and password are required");
         }
@@ -96,7 +94,6 @@ export const authOptions: NextAuthOptions = {
           if (!isPasswordCorrect) {
             throw new Error("Incorrect password");
           }
-
           return {
             id: user._id as string,
             name: user.name,
