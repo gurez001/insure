@@ -13,6 +13,7 @@ import type React from "react"; // Added import for React
 import { SocialLoginBtns } from "@/components/buttons/social-login-btns"
 import { GeneralBtn } from "@/components/buttons/general-btn"
 import LazyImage from "@/components/LazyImage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 type SignUpFormProps = React.ComponentProps<"div">;
 
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
@@ -79,17 +80,33 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 </p>
               </div>
               <div className="space-y-4">
-              <div className="grid gap-2">
-                <Label htmlFor="fullname">Full name</Label>
-                <Input
-                  id="fullname"
-                  name="fullname"
-                  type="text"
-                  placeholder="johndoe"
-                  className={errors.fullname ? "border-red-500" : ""}
-                />
+                <div className="grid gap-2">
+                  <Label htmlFor="fullname">Full name</Label>
+                  <Input
+                    id="fullname"
+                    name="fullname"
+                    type="text"
+                    placeholder="johndoe"
+                    className={errors.fullname ? "border-red-500" : ""}
+                  />
                   {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
-              </div>
+                </div>
+                <div className="space-y-2">
+                <Label htmlFor="fullname">Select role</Label>
+
+                  <div className="flex items-center space-x-2">
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="consumer">Consumer</SelectItem>
+                        <SelectItem value="agent">Agent</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {errors.agree && <p className="text-sm text-red-500">{errors.agree.message}</p>}
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
