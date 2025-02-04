@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import type React from "react"; // Added import for React
 import { SocialLoginBtns } from "@/components/buttons/social-login-btns"
 import { GeneralBtn } from "@/components/buttons/general-btn"
+import LazyImage from "@/components/LazyImage";
 type LoginFormProps = React.ComponentProps<"div">;
 
 export function LoginForm({ className, ...props }: LoginFormProps) {
@@ -60,57 +61,62 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
-        <CardContent>
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold">Welcome back</h1>
-              <p className="text-sm text-muted-foreground">
-                Login to your Karnal web tech account
-              </p>
-            </div>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
+        <CardContent className="grid p-0 md:grid-cols-2">
+          <div className="p-6 md:p-8">
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <p className="text-sm text-muted-foreground">
+                  Login to your Karnal web tech account
+                </p>
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm text-blue hover:underline underline-offset-2"
-                  >
-                    Forgot your password?
-                  </Link>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    required
+                  />
                 </div>
-                <Input id="password" name="password" type="password" required />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    <Link
+                      href="/forgot-password"
+                      className="text-sm text-blue hover:underline underline-offset-2"
+                    >
+                      Forgot your password?
+                    </Link>
+                  </div>
+                  <Input id="password" name="password" type="password" required />
+                </div>
               </div>
-            </div>
-            <GeneralBtn type="submit" title="Sign in" loader={isLoading} />
-            <div className="relative text-center">
-              <span className="bg-background px-2 text-sm text-muted-foreground relative z-10">
-                Or continue with
-              </span>
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+              <div className="w-full">             <GeneralBtn type="submit" title="Sign in" loader={isLoading} /></div>
+              <div className="relative text-center">
+                <span className="bg-background px-2 text-sm text-muted-foreground relative z-10">
+                  Or continue with
+                </span>
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
               </div>
-            </div>
-            <div className="pt-6 grid grid-cols-3 gap-4">
-              <SocialLoginBtns />
-            </div>
-            <div className="text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/sign-up" className="underline underline-offset-4">
-                Sign up
-              </Link>
-            </div>
-          </form>
+              <div className="pt-6 grid grid-cols-3 gap-4">
+                <SocialLoginBtns />
+              </div>
+              <div className="text-center text-sm">
+                Don&apos;t have an account?{" "}
+                <Link href="/sign-up" className="underline underline-offset-4">
+                  Sign up
+                </Link>
+              </div>
+            </form>
+          </div>
+          <div className="relative hidden bg-muted md:block">
+            <LazyImage src="/assets/img.webp" alt="Lazy loaded image" width={1920} height={1080} />
+          </div>
         </CardContent>
       </Card>
       <p className="text-balance text-center text-xs text-muted-foreground">

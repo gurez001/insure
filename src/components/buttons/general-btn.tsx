@@ -8,6 +8,7 @@ interface GeneralBtnProps {
   loader?: boolean;
   submit?: () => void;
   type?: "submit" | "button" | "reset";
+  style?: string;
 }
 
 export const GeneralBtn: React.FC<GeneralBtnProps> = ({
@@ -15,9 +16,10 @@ export const GeneralBtn: React.FC<GeneralBtnProps> = ({
   loader = false,
   submit,
   type = "button",
+  style = "w-full"
 }) => {
   return (
-    <Button type={type} disabled={loader} {...(submit && { onClick: submit })}>
+    <Button className={style} type={type} disabled={loader} {...(submit && { onClick: submit })}>
       {loader ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
       {title}
     </Button>

@@ -10,7 +10,12 @@ export const SocialLoginBtns = () => {
     const handleSocialSignIn = (provider: "github" | "google" | "apple" | "meta") => async () => {
         setIsLoading(true)
         setLoadingProvider(provider)
-        await signIn(provider)
+        if (provider === "google") {
+            await signIn(provider, { callbackUrl: "/", popup: true })
+        } else {
+            await signIn(provider)
+        }
+
         setIsLoading(false)
         setLoadingProvider(null)
     }
