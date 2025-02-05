@@ -16,11 +16,11 @@ export async function middleware(request: NextRequest) {
       url.pathname === "/forgot-password")
     ) {
     console.log("homess")
-    return NextResponse.redirect(new URL("/", request.url))
+    return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
   // If the user is not authenticated and trying to access protected routes, redirect to sign-in
-  if (!token && (url.pathname === "/" || url.pathname.startsWith("/protected"))) {
+  if (!token && (url.pathname === "/" || url.pathname.startsWith("/dashboard"))) {
     console.log("not homess")
     return NextResponse.redirect(new URL("/sign-in", request.url))
   }
@@ -31,5 +31,5 @@ export async function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/", "/sign-in", "/sign-up", "/forgot-password", "/verify", "/protected/:path*", "/error"],
+  matcher: ["/", "/sign-in", "/sign-up", "/forgot-password", "/verify", "/dashboard/:path*", "/error"],
 }
