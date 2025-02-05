@@ -48,21 +48,11 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
       if (!result || !result.ok) {
         throw new Error(result?.error || "Invalid email or password")
       }
-      if (result?.ok) {
-        console.log("Login successful, preparing to redirect...")
-        toast({
-          title: "Success",
-          description: "Login successful. Redirecting to dashboard...",
-          variant: "default",
-        })
 
-        // Use a small delay before redirecting
-        setTimeout(() => {
-          console.log("Redirecting to dashboard...")
-          router.refresh(); 
-          router.push("/dashboard")
-        }, 1000)
-      }
+      // Small delay before redirect
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await router.replace("/");
+
     } catch (error) {
       toast({
         title: "Error",

@@ -6,14 +6,23 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl
   console.log("token", token)
 
-  // If the user is not authenticated and trying to access protected routes, redirect to sign-in
-  if (!token && url.pathname === "/" || url.pathname.startsWith("/dashboard")) {
+  // If the user is authenticated and trying to access auth pages, redirect to home
+  if (
+    token &&
+    (url.pathname === "/sign-in" ||
+      url.pathname === "/sign-up" ||
+      url.pathname === "/verify" ||
+      url.pathname === "/error" ||
+      url.pathname === "/forgot-password")
+    ) {
+    console.log("homess")
+    return NextResponse.redirect(new URL("/", request.url))
+  }
+
+  // If the user is not authenticated and trying to access dashboard routes, redirect to sign-in
+  if (!token && (url.pathname === "/" || url.pathname.startsWith("/dashboard"))) {
     console.log("not homess")
     return NextResponse.redirect(new URL("/sign-in", request.url))
-  }
-  // If the user is authenticated and trying to access auth pages, redirect to home
-  if (token && ["/sign-in", "/sign-up", "/verify"].includes(request.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   // For all other cases, allow the request to proceed
