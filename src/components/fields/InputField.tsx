@@ -20,6 +20,7 @@ interface InputFieldProps<T extends FieldValues> {
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Optional onChange handler
   maxLength?: number; // Optional maxLength for the input
   disabled_path?: boolean; // Optional disabled state
+  required?: boolean; // Optional required state
 }
 
 const InputField = <T extends FieldValues>({
@@ -32,6 +33,7 @@ const InputField = <T extends FieldValues>({
   handleInputChange,
   maxLength,
   disabled_path = false,
+  required = true,
 }: InputFieldProps<T>) => {
   let errorMessage: string | undefined;
 
@@ -60,7 +62,7 @@ const InputField = <T extends FieldValues>({
         render={({ field }) => (
           <div>
             <Input
-              placeholder={label}
+              placeholder={required?label:`${label} (optional..)`}
               type={type}
               className={inputStyle}
               disabled={disabled_path}

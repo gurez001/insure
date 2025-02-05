@@ -25,8 +25,10 @@ export async function sendVerificationEmail(email: string, otp: number) {
       `,
     });
   } catch (error) {
-    console.error("Error sending verification email:", error);
-    throw new Error("Failed to send verification email");
+    throw new Error(
+      "Failed to send verification email: " +
+        (error instanceof Error ? error.message : String(error))
+    );
   }
 }
 
@@ -39,6 +41,9 @@ export async function sendNewPassword(email: string, password: string) {
       text: `Hello,\n\nYour new password is: ${password}\n\nPlease change it after logging in.\n\nBest Regards,\nYour Company`,
     });
   } catch (error) {
-    throw new Error("Failed to send verification email" + error);
+    throw new Error(
+      "Failed to send verification email: " +
+        (error instanceof Error ? error.message : String(error))
+    );
   }
 }

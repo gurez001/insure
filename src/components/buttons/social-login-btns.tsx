@@ -21,7 +21,7 @@ export const SocialLoginBtns = () => {
     }
     return (
         <>
-            <Button variant="outline" className="w-full" onClick={handleSocialSignIn("apple")} disabled={isLoading}>
+            {/* <Button variant="outline" className="w-full" onClick={handleSocialSignIn("apple")} disabled={isLoading}>
                 {isLoading && loadingProvider === "apple" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
@@ -33,7 +33,7 @@ export const SocialLoginBtns = () => {
                     </svg>
                 )}
                 <span className="sr-only">Login with Apple</span>
-            </Button>
+            </Button> */}
             <Button variant="outline" className="w-full" onClick={handleSocialSignIn("google")} disabled={isLoading}>
                 {isLoading && loadingProvider === "google" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -47,7 +47,7 @@ export const SocialLoginBtns = () => {
                 )}
                 <span className="sr-only">Login with Google</span>
             </Button>
-            <Button variant="outline" className="w-full" onClick={handleSocialSignIn("meta")} disabled={isLoading}>
+            {/* <Button variant="outline" className="w-full" onClick={handleSocialSignIn("meta")} disabled={isLoading}>
                 {isLoading && loadingProvider === "meta" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
@@ -59,7 +59,7 @@ export const SocialLoginBtns = () => {
                     </svg>
                 )}
                 <span className="sr-only">Login with Meta</span>
-            </Button>
+            </Button> */}
         </>
     )
 }

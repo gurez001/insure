@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import GoogleProvider from "next-auth/providers/google";
 import { User } from "@/model/user.model";
 import jwt from "jsonwebtoken";
+import genrateUUID from "@/utils/uuidgenrator";
 
 interface UserType {
   id: string;
@@ -29,8 +30,15 @@ async function findOrCreateUser(profile: SocialProfile, provider: string) {
     profile.email.split("@")[0] + provider,
     salt
   );
+  const totalUser = await User.countDocuments();
+  const userId: string = genrateUUID();
+  // New user registration flow
   if (!user) {
+    const newUserId = `user_${
+      profile.name || profile.email.split("@")[0].slice(0, 3)
+    }-${userId}-${totalUser}`;
     user = new User({
+      userId: newUserId,
       name: profile.name || profile.email.split("@")[0],
       email: profile.email,
       image: profile.picture,
@@ -104,7 +112,9 @@ export const authOptions: NextAuthOptions = {
             isVerified: user.isVerified,
           };
         } catch (error) {
-          throw new Error(error instanceof Error ? error.message : "An unknown error occurred")
+          throw new Error(
+            error instanceof Error ? error.message : "An unknown error occurred"
+          );
         }
       },
     }),

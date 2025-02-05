@@ -123,14 +123,18 @@ function LocationField<T extends LocationItem>({
   disabled,
 }: LocationFieldProps<T>) {
   return (
-    <div>
-      <Label>{label}</Label>
-      <Command>
-        <CommandInput placeholder={placeholder} onValueChange={onSearch} disabled={disabled} />
-        <CommandList>
+    <div className="space-y-2">
+      <Label className="text-sm font-medium text-gray-700">{label}</Label>
+      <Command className="rounded-lg border border-gray-300 shadow-sm">
+        <CommandInput placeholder={placeholder} onValueChange={onSearch} disabled={disabled} className="py-3" />
+        <CommandList className="max-h-48 overflow-y-auto">
           <CommandEmpty>No {label.toLowerCase()} found.</CommandEmpty>
           {items.map((item) => (
-            <CommandItem key={"isoCode" in item ? item.isoCode : item.name} onSelect={() => onSelect(item)}>
+            <CommandItem
+              key={"isoCode" in item ? item.isoCode : item.name}
+              onSelect={() => onSelect(item)}
+              className="cursor-pointer hover:bg-gray-100 py-2"
+            >
               {item.name}
             </CommandItem>
           ))}

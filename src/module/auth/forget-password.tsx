@@ -33,24 +33,21 @@ export default function ForgotPasswordPage() {
         body: JSON.stringify({ email }),
       });
 
-      if (response.ok) {
-        router.push("/sign-in");
-        toast({
-          title: "Success",
-          description: "Password has been sent to your email",
-        });
-      } else {
-        const data = await response.json();
-        toast({
-          title: "Error",
-          description: data.message || "Something went wrong",
-          variant: "destructive",
-        });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.message || "Something wrong please try again after some time");
       }
+      router.push("/sign-in");
+      toast({
+        title: "Success",
+        description: "Password has been sent to your email",
+      });
     } catch (error) {
+      console.log(error);
       toast({
         title: "Error",
-        description: error instanceof Error?error.message: "An error occurred",
+        description:
+          error instanceof Error ? error.message : "An error occurred",
         variant: "destructive",
       });
     } finally {
@@ -66,8 +63,8 @@ export default function ForgotPasswordPage() {
             Forgot Password
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your email address and we&apos;ll send you a link to reset your
-            password.
+            Enter your email address and we&apos;ll send you a link to reset
+            your password.
           </CardDescription>
         </CardHeader>
         <CardContent>

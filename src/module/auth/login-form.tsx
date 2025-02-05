@@ -113,7 +113,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                   <span className="w-full border-t" />
                 </div>
               </div>
-              <div className="pt-6 grid grid-cols-3 gap-4">
+              <div className="pt-0 grid grid-cols-1 gap-4">
                 <SocialLoginBtns />
               </div>
               <div className="text-center text-sm">
