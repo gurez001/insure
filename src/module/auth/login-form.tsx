@@ -59,6 +59,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         // Use a small delay before redirecting
         setTimeout(() => {
           console.log("Redirecting to dashboard...")
+          router.refresh(); 
           router.push("/dashboard")
         }, 1000)
       }
