@@ -36,7 +36,7 @@ const ContactInfoForm = <T extends FieldValues>({
           <InputField
             control={control}
             errors={errors}
-            label="last Name"
+            label="Last Name"
             name={"lastName" as Path<T>}
           />
           <InputField

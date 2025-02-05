@@ -56,7 +56,7 @@ const PolicyHolderSchema = new Schema<IPolicyHolder>(
       type: String,
       enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
     },
-    healthConditions: [{ type: String,required: true }],
+    healthConditions: [{ type: String, required: true }],
     disabilityStatus: { type: Boolean },
     languagesSpoken: [{ type: String }],
     hobbies: [{ type: String }],
