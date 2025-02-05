@@ -31,7 +31,7 @@ const SelectFields = <T extends FieldValues>({
   errors,
   name,
   label,
-  placeholder = "Select category",
+  placeholder = "Select one",
   drop_down_selector,
   class_style,
 }: SelectFieldProps<T>) => {

@@ -57,7 +57,7 @@ export default function LocationSelector({ onSelect }: LocationSelectorProps) {
   }, [selectedCountry, selectedState, selectedCity, onSelect])
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <LocationField<CountryItem>
         label="Country"
         placeholder="Search country..."

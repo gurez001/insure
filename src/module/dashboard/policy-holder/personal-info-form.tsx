@@ -8,8 +8,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 const bloodGroup = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 const gender = ["Male", "Female", "Other"];
 const maritalStatuses = ["single", "married", "divorced", "widowed"]
-const insuranceTypes = ["health", "life", "home", "auto"]
-const paymentMethods = ["credit_card", "debit_card", "bank_transfer", "cash"]
 // const socialMediaPlatforms = ["facebook", "twitter", "linkedin", "instagram"]
 interface PersonalInfoProps<T extends FieldValues> {
   control: Control<T>;
@@ -32,43 +30,47 @@ const PersonalInfoForm = <T extends FieldValues>({
             label="Nationality"
             name={"nationality" as Path<T>}
           />
-          <RadioGroup
-          //  value={selectedType} onValueChange={setSelectedType}
-          >
+          <div className="space-y-2">
             <Label htmlFor={"Gender"} className="capitalize">Gender</Label>
-            {gender.map((type) => (
-              <div key={type} className="flex items-center space-x-2">
-                <RadioGroupItem value={type} id={type} />
-                <Label htmlFor={type} className="capitalize">
-                  {type}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-          <RadioGroup
-          //  value={selectedType} onValueChange={setSelectedType}
-          >
+            <RadioGroup className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            //  value={selectedType} onValueChange={setSelectedType}
+            >
+              {gender.map((type) => (
+                <div key={type} className="flex items-center space-x-2">
+                  <RadioGroupItem value={type} id={type} />
+                  <Label htmlFor={type} className="capitalize">
+                    {type}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+          <div className="space-y-2">
             <Label htmlFor={"BloodType"} className="capitalize">Blood Type</Label>
+            <RadioGroup className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            //  value={selectedType} onValueChange={setSelectedType}
+            >
 
-            {bloodGroup.map((type) => (
-              <div key={type} className="flex items-center space-x-2">
-                <RadioGroupItem value={type} id={type} />
-                <Label htmlFor={type} className="capitalize">
-                  {type}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-
+              {bloodGroup.map((type) => (
+                <div key={type} className="flex items-center space-x-2">
+                  <RadioGroupItem value={type} id={type} />
+                  <Label htmlFor={type} className="capitalize">
+                    {type}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
           <InputField
             control={control}
             errors={errors}
             label="Health Conditions"
             name={"healthConditions" as Path<T>}
           />
-          <Checkbox id="disabilityStatus" />
-          <Label style={{ margin: "0px !important" }} htmlFor="disabilityStatus">Disability Status</Label>
-
+          <div className="flex gap-2 items-center">
+            <Checkbox id="disabilityStatus" />
+            <Label style={{ margin: "0px !important" }} htmlFor="disabilityStatus">Disability Status</Label>
+          </div>
           <InputField
             control={control}
             errors={errors}
@@ -99,44 +101,23 @@ const PersonalInfoForm = <T extends FieldValues>({
             label="Occupation"
             name={"occupation" as Path<T>}
           />
-          <RadioGroup
-          // value={selectedType} onValueChange={setSelectedType}
-          >
-            {maritalStatuses.map((type) => (
-              <div key={type} className="flex items-center space-x-2">
-                <RadioGroupItem value={type} id={type} />
-                <Label htmlFor={type} className="capitalize">
-                  {type}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-          <RadioGroup
-          // value={selectedType} onValueChange={setSelectedType}
-          >
-            {insuranceTypes.map((type) => (
-              <div key={type} className="flex items-center space-x-2">
-                <RadioGroupItem value={type} id={type} />
-                <Label htmlFor={type} className="capitalize">
-                  {type}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-          <RadioGroup
-          // value={selectedType} onValueChange={setSelectedType}
-          >
-            {paymentMethods.map((type) => (
-              <div key={type} className="flex items-center space-x-2">
-                <RadioGroupItem value={type} id={type} />
-                <Label htmlFor={type} className="capitalize">
-                  {type}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
+       <div className="space-y-2">
+            <Label htmlFor="maritalStatus">Marital Status</Label>
 
+            <RadioGroup className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            // value={selectedType} onValueChange={setSelectedType}
+            >
+              {maritalStatuses.map((type) => (
+                <div key={type} className="flex items-center space-x-2">
+                  <RadioGroupItem value={type} id={type} />
+                  <Label htmlFor={type} className="capitalize">
+                    {type}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup></div>
           
+
           {/*      
       <FormField
         control={form.control}

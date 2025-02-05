@@ -18,8 +18,8 @@ const ContactInfoForm = <T extends FieldValues>({
       <CardHeader>
         <CardTitle>Contact Information</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-4">
-        <div>
+      <CardContent className="grid grid-cols-2 gap-4 ">
+        <div className="space-y-2">
           <InputField
             control={control}
             errors={errors}
@@ -46,20 +46,22 @@ const ContactInfoForm = <T extends FieldValues>({
             name={"email" as Path<T>}
             type="email"
           />
-          <InputField
-            control={control}
-            errors={errors}
-            label="Phone"
-            name={"phone" as Path<T>}
-            type="number"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
-            control={control}
-            errors={errors}
-            label="Alternate Phone"
-            name={"alternatePhone" as Path<T>}
-            type="number"
-          />
+              control={control}
+              errors={errors}
+              label="Phone"
+              name={"phone" as Path<T>}
+              type="number"
+            />
+            <InputField
+              control={control}
+              errors={errors}
+              label="Alternate Phone"
+              name={"alternatePhone" as Path<T>}
+              type="number"
+            />
+          </div>
           <SelectFields
             control={control}
             errors={errors}
