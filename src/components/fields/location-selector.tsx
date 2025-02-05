@@ -2,33 +2,28 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { Country, State, City } from "country-state-city"
-import { Command, CommandInput, CommandItem, CommandList, CommandEmpty } from "@/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Label } from "@/components/ui/label"
-
-interface Location {
-  country: string
-  state: string
-  city: string
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Check, ChevronsUpDown } from "lucide-react"
+import { cn } from "@/lib/utils"
+interface LocationItem {
+  name: string
 }
 
-interface CountryItem {
+interface CountryItem extends LocationItem {
   isoCode: string
-  name: string
 }
 
-interface StateItem {
+interface StateItem extends LocationItem {
   isoCode: string
-  name: string
 }
 
-interface CityItem {
-  name: string
-}
-
-type LocationItem = CountryItem | StateItem | CityItem
 
 interface LocationSelectorProps {
-  onSelect: (location: Location) => void
+  onSelect: (country: string, state: string, city: string) => void
 }
 
 export default function LocationSelector({ onSelect }: LocationSelectorProps) {
@@ -39,33 +34,26 @@ export default function LocationSelector({ onSelect }: LocationSelectorProps) {
   const [stateSearch, setStateSearch] = useState("")
   const [citySearch, setCitySearch] = useState("")
 
-  const countries = useMemo<CountryItem[]>(() => Country.getAllCountries(), [])
-  const states = useMemo<StateItem[]>(
-    () => (selectedCountry ? State.getStatesOfCountry(selectedCountry) : []),
-    [selectedCountry],
-  )
-  const cities = useMemo<CityItem[]>(
-    () => (selectedState ? City.getCitiesOfState(selectedCountry, selectedState) : []),
-    [selectedCountry, selectedState],
-  )
+  const filteredCountries = useMemo(() => {
+    return Country.getAllCountries().filter((country) =>
+      country.name.toLowerCase().includes(countrySearch.toLowerCase()),
+    )
+  }, [countrySearch])
 
-  const filteredCountries = useMemo(
-    () => countries.filter((country) => country.name.toLowerCase().includes(countrySearch.toLowerCase())),
-    [countries, countrySearch],
-  )
+  const filteredStates = useMemo(() => {
+    return State.getStatesOfCountry(selectedCountry).filter((state) =>
+      state.name.toLowerCase().includes(stateSearch.toLowerCase()),
+    )
+  }, [selectedCountry, stateSearch])
 
-  const filteredStates = useMemo(
-    () => states.filter((state) => state.name.toLowerCase().includes(stateSearch.toLowerCase())),
-    [states, stateSearch],
-  )
-
-  const filteredCities = useMemo(
-    () => cities.filter((city) => city.name.toLowerCase().includes(citySearch.toLowerCase())),
-    [cities, citySearch],
-  )
+  const filteredCities = useMemo(() => {
+    return City.getCitiesOfState(selectedCountry, selectedState).filter((city) =>
+      city.name.toLowerCase().includes(citySearch.toLowerCase()),
+    )
+  }, [selectedCountry, selectedState, citySearch])
 
   useEffect(() => {
-    onSelect({ country: selectedCountry, state: selectedState, city: selectedCity })
+    onSelect(selectedCountry, selectedState, selectedCity)
   }, [selectedCountry, selectedState, selectedCity, onSelect])
 
   return (
@@ -81,6 +69,7 @@ export default function LocationSelector({ onSelect }: LocationSelectorProps) {
           setSelectedCity("")
         }}
         disabled={false}
+        value={selectedCountry}
       />
       <LocationField<StateItem>
         label="State"
@@ -92,14 +81,16 @@ export default function LocationSelector({ onSelect }: LocationSelectorProps) {
           setSelectedCity("")
         }}
         disabled={!selectedCountry}
+        value={selectedState}
       />
-      <LocationField<CityItem>
+      <LocationField<LocationItem>
         label="City"
         placeholder="Search city..."
         items={filteredCities}
         onSearch={setCitySearch}
         onSelect={(city) => setSelectedCity(city.name)}
         disabled={!selectedState}
+        value={selectedCity}
       />
     </div>
   )
@@ -112,6 +103,7 @@ interface LocationFieldProps<T extends LocationItem> {
   onSearch: (value: string) => void
   onSelect: (item: T) => void
   disabled: boolean
+  value: string
 }
 
 function LocationField<T extends LocationItem>({
@@ -121,25 +113,57 @@ function LocationField<T extends LocationItem>({
   onSearch,
   onSelect,
   disabled,
+  value,
 }: LocationFieldProps<T>) {
+  const [open, setOpen] = useState(false)
+
   return (
     <div className="space-y-2">
       <Label className="text-sm font-medium text-gray-700">{label}</Label>
-      <Command className="rounded-lg border border-gray-300 shadow-sm">
-        <CommandInput placeholder={placeholder} onValueChange={onSearch} disabled={disabled} className="py-3" />
-        <CommandList className="max-h-48 overflow-y-auto">
-          <CommandEmpty>No {label.toLowerCase()} found.</CommandEmpty>
-          {items.map((item) => (
-            <CommandItem
-              key={"isoCode" in item ? item.isoCode : item.name}
-              onSelect={() => onSelect(item)}
-              className="cursor-pointer hover:bg-gray-100 py-2"
-            >
-              {item.name}
-            </CommandItem>
-          ))}
-        </CommandList>
-      </Command>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between"
+            disabled={disabled}
+          >
+            {value ? items.find((item) => ("isoCode" in item ? item.isoCode : item.name) === value)?.name : placeholder}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[300px] p-0">
+          <div className="p-2">
+            <Input placeholder={placeholder} onChange={(e) => onSearch(e.target.value)} className="mb-2" />
+            <ScrollArea className="h-[200px]">
+              {items.length === 0 ? (
+                <p className="text-sm text-center py-2 text-muted-foreground">No {label.toLowerCase()} found.</p>
+              ) : (
+                items.map((item) => (
+                  <Button
+                    key={("isoCode" in item ? item.isoCode : item.name) as string}
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      onSelect(item)
+                      setOpen(false)
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === ("isoCode" in item ? item.isoCode : item.name) ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                    {item.name}
+                  </Button>
+                ))
+              )}
+            </ScrollArea>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }
