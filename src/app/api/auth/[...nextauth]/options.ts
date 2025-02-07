@@ -95,12 +95,16 @@ export const authOptions: NextAuthOptions = {
           if (!user.isVerified) {
             throw new Error("Please verify your account before login");
           }
+        
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password,
             user.password
           );
           if (!isPasswordCorrect) {
             throw new Error("Incorrect password");
+          }
+          if(user.role !== "admin"){
+            throw new Error("Please contact to admin");
           }
           return {
             id: user._id as string,

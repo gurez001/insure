@@ -35,6 +35,19 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
+    
+    {
+      title: "Customers",
+      url: "/dashboard/customers",
+      icon: SquareActivity,
+      isActive: true,
+      items: [
+        {
+          title: "Add customers",
+          url: "/dashboard/customers/add-customers",
+        },
+      ],
+    },
     {
       title: "Policies",
       url: "#",

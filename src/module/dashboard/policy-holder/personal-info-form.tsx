@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import RadioGroupfield from "@/components/fields/RadioGroupfield"
 import CheckboxField from "@/components/fields/CheckboxField"
 import SelectFields from "@/components/fields/select-field"
-import MultiSelectField from "@/components/fields/MultiSelectField"
+// import MultiSelectField from "@/components/fields/MultiSelectField"
 const bloodGroup = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 const gender = ["Male", "Female", "Other"];
 const maritalStatuses = ["single", "married", "divorced", "widowed"]
@@ -58,12 +58,12 @@ const PersonalInfoForm = <T extends FieldValues>({
               ))}
             </RadioGroup>
           </div>
-          <MultiSelectField
+          {/* <MultiSelectField
             control={control}
             errors={errors}
             label="Health Conditions"
             name={"healthConditions" as Path<T>}
-          />
+          /> */}
           <SelectFields
             control={control}
             errors={errors}
